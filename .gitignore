@@ -1,0 +1,18 @@
+﻿# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Archivos generados por .NET
+bin/
+obj/
+
+# Archivos temporales
+*.tmp
+*.log
+
+# Configuración local y secretos
+.env
+.env.*
+!.env.example
+appsettings.Development.json

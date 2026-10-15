@@ -1,0 +1,164 @@
+@model DespachoApp.Models.PedidoViewModel
+@{
+    ViewData["Title"] = "Cargar productos";
+}
+
+<h2>Nuevo despacho</h2>
+<p class="text-muted">Paso 2: Cargá los productos para <strong>@Model.NombreCliente</strong>.</p>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">Agregar producto</div>
+            <div class="card-body">
+                <form asp-action="AgregarProducto" method="post" id="formAgregar">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Código de producto</label>
+                        <div class="input-group">
+                            <input id="inputCodigo" name="codigo" class="form-control" required />
+                            <button type="button" class="btn btn-outline-secondary" onclick="buscarProducto()">🔍</button>
+                        </div>
+                    </div>
+                    <div id="productoEncontrado" class="alert alert-info d-none py-2 small"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad</label>
+                        <input name="cantidad" id="inputCantidad" type="number" min="1" value="1" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Agregar al despacho</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">Detalle del despacho</div>
+            <div class="card-body p-0">
+                @if (Model.Lineas.Any())
+                {
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th class="text-center">Cant.</th>
+                                <th class="text-end">Costo unit.</th>
+                                <th class="text-end">Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var linea in Model.Lineas)
+                            {
+                                <tr>
+                                    <td><code>@linea.Codigo</code></td>
+                                    <td>@linea.Descripcion</td>
+                                    <td class="text-center">@linea.Cantidad</td>
+                                    <td class="text-end">$@linea.CostoUnitario.ToString("N2")</td>
+                                    <td class="text-end fw-bold">$@linea.Subtotal.ToString("N2")</td>
+                                    <td>
+                                        <form asp-action="EliminarLinea" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="productoId" value="@linea.ProductoId" />
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar línea">✕</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted text-center p-4">No hay productos cargados aún.</p>
+                }
+            </div>
+
+            @if (Model.Lineas.Any())
+            {
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-6 text-muted small">
+                            <strong>Usuario:</strong> @User.Identity?.Name<br />
+                            <strong>Cliente:</strong> @Model.NombreCliente
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="text-muted small">Total productos: <strong>@Model.TotalProductos</strong></div>
+                            <div class="fs-5 fw-bold text-success">Monto total: $@Model.MontoTotal.ToString("N2")</div>
+                            <form id="formConfirmar" asp-action="Confirmar" method="post" class="mt-2">
+                                @Html.AntiForgeryToken()
+
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalConfirmar">
+                                    Confirmar despacho
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    async function buscarProducto() {
+        const codigo = document.getElementById('inputCodigo').value.trim();
+        if (!codigo) return;
+        const resp = await fetch(`/Productos/BuscarPorCodigo?codigo=${encodeURIComponent(codigo)}`);
+        const data = await resp.json();
+        const div = document.getElementById('productoEncontrado');
+        if (data.ok) {
+            div.className = 'alert alert-info py-2 small';
+            div.innerHTML = `<strong>${data.codigo}</strong> — ${data.descripcion} — $${Number(data.costoUnitario).toFixed(2)}`;
+        } else {
+            div.className = 'alert alert-warning py-2 small';
+            div.innerHTML = data.mensaje;
+        }
+        div.classList.remove('d-none');
+    }
+
+    document.getElementById('inputCodigo').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); buscarProducto(); }
+    });
+</script>
+
+    <div class="modal fade" id="modalConfirmar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Confirmar despacho</h5>
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    ¿Está seguro que desea confirmar este despacho?
+
+                    <div class="alert alert-warning mt-3 mb-0">
+                        Una vez confirmado no podrá modificarse.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-success"
+                            onclick="document.getElementById('formConfirmar').submit();">
+                        Sí, confirmar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

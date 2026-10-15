@@ -1,0 +1,56 @@
+@* Index.cshtml *@
+@model IEnumerable<DespachoApp.Models.Cliente>
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Clientes</h2>
+    <a asp-action="Create" class="btn btn-success">+ Nuevo cliente</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Buscar por nombre o DNI/CUIT..." />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary">Buscar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>#</th>
+                <th>Nombre / Razón social</th>
+                <th>DNI / CUIT</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Id</td>
+                    <td>@c.Nombre</td>
+                    <td>@c.DniCuit</td>
+                    <td>@(c.Telefono ?? "-")</td>
+                    <td>@(c.Email ?? "-")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-info">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-warning">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (!Model.Any())
+{
+    <p class="text-muted text-center">No hay clientes registrados.</p>
+}

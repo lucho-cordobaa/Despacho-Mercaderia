@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold text-primary">Gestor de Despacho de Mercaderia</h1>
+    <p class="lead text-muted">Sistema de gestión de pedidos y despacho a clientes</p>
+    <hr class="my-4" />
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-controller="Pedidos" asp-action="Nuevo" class="btn btn-primary btn-lg me-2">Nuevo despacho</a>
+        <a asp-controller="Pedidos" asp-action="Index" class="btn btn-outline-primary btn-lg">Ver pedidos</a>
+    }
+    else
+    {
+        <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg">Iniciar sesión</a>
+    }
+</div>
+
+<hr />
+
+<h3 class="text-center mb-4">Integrantes del grupo</h3>
+<div class="row justify-content-center g-4">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="fs-1">👤</div>
+                <h5 class="card-title mt-2">Luciano Córdoba</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="fs-1">👤</div>
+                <h5 class="card-title mt-2">Joaquin Carballo</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="fs-1">👤</div>
+                <h5 class="card-title mt-2">Santiago Ferpozzi</h5>
+            </div>
+        </div>
+    </div>
+</div>

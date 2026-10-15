@@ -1,0 +1,42 @@
+@model DespachoApp.Models.Direccion
+@{
+    ViewData["Title"] = "Nueva dirección";
+}
+
+<h2>Nueva dirección</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <div class="mb-3">
+                <label class="form-label">Cliente</label>
+                <select name="ClienteId" asp-items="@ViewBag.ClienteId" class="form-select" required>
+                    <option value="">-- Seleccionar --</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Calle" class="form-label"></label>
+                <input asp-for="Calle" class="form-control" />
+                <span asp-validation-for="Calle" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Numero" class="form-label"></label>
+                <input asp-for="Numero" class="form-control" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Localidad" class="form-label"></label>
+                <input asp-for="Localidad" class="form-control" />
+                <span asp-validation-for="Localidad" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Provincia" class="form-label"></label>
+                <input asp-for="Provincia" class="form-control" />
+                <span asp-validation-for="Provincia" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a asp-controller="Clientes" asp-action="Details" asp-route-id="@Model.ClienteId" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

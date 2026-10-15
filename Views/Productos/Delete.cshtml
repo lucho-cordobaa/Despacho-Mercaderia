@@ -1,0 +1,23 @@
+@model DespachoApp.Models.Producto
+@{
+    ViewData["Title"] = "Eliminar producto";
+}
+
+<h2>¿Confirmar eliminación?</h2>
+
+<div class="card border-danger shadow-sm" style="max-width:400px">
+    <div class="card-header bg-danger text-white">Atención</div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-5">Código</dt><dd class="col-7"><code>@Model.Codigo</code></dd>
+            <dt class="col-5">Descripción</dt><dd class="col-7">@Model.Descripcion</dd>
+            <dt class="col-5">Costo</dt><dd class="col-7">$@(Model.CostoUnitario ?? 0).ToString("N2")</dd>
+        </dl>
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

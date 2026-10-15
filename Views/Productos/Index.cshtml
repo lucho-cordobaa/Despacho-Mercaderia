@@ -1,0 +1,52 @@
+@model IEnumerable<DespachoApp.Models.Producto>
+@{
+    ViewData["Title"] = "Productos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Productos</h2>
+    <a asp-action="Create" class="btn btn-success">+ Nuevo producto</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Buscar por código o descripción..." />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary">Buscar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Costo unitario</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td><code>@p.Codigo</code></td>
+                    <td>@p.Descripcion</td>
+                    <td>$@((p.CostoUnitario ?? 0).ToString("N0"))</td>
+                    <td>@p.Stock</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-warning">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (!Model.Any())
+{
+    <p class="text-muted text-center">No hay productos registrados.</p>
+}

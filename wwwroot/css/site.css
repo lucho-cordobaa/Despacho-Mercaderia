@@ -1,0 +1,29 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.table th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+footer {
+    font-size: 0.8rem;
+}
+
+code {
+    background: #e8f0fe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #1a56db;
+}

@@ -1,0 +1,70 @@
+@model DespachoApp.Models.Pedido
+@{
+    ViewData["Title"] = $"Pedido #{Model.Id}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Pedido #@Model.Id</h2>
+    <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">Encabezado</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5">Fecha</dt><dd class="col-7">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dt class="col-5">Cliente</dt><dd class="col-7">@Model.Cliente?.Nombre</dd>
+                    <dt class="col-5">Usuario</dt><dd class="col-7">@Model.Usuario?.NombreUsuario</dd>
+                    <dt class="col-5">Estado</dt>
+                    <dd class="col-7">
+                        @if (Model.Confirmado)
+                        {
+                            <span class="badge bg-success">Confirmado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">En proceso</span>
+                        }
+                    </dd>
+                    <dt class="col-5">Total</dt><dd class="col-7 fw-bold text-success fs-5">$@Model.Total.ToString("N2")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>Detalle de productos</h5>
+<div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+        <thead class="table-secondary">
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Costo unit.</th>
+                <th class="text-end">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model.Detalles)
+            {
+                <tr>
+                    <td><code>@d.Producto?.Codigo</code></td>
+                    <td>@d.Producto?.Descripcion</td>
+                    <td class="text-center">@d.Cantidad</td>
+                    <td class="text-end">$@d.CostoUnitario.ToString("N2")</td>
+                    <td class="text-end fw-bold">$@d.Subtotal.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-light fw-bold">
+                <td colspan="3">Total productos: @Model.Detalles.Sum(d => d.Cantidad)</td>
+                <td class="text-end">Total:</td>
+                <td class="text-end text-success">$@Model.Total.ToString("N2")</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

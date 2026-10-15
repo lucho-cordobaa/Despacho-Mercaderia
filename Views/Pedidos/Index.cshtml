@@ -1,0 +1,61 @@
+@model IEnumerable<DespachoApp.Models.Pedido>
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<h2>Pedidos registrados</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input name="buscarUsuario" value="@ViewBag.BuscarUsuario" class="form-control" placeholder="Buscar por usuario..." />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary">Buscar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Usuario</th>
+                <th class="text-end">Total</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@p.Cliente?.Nombre</td>
+                    <td>@p.Usuario?.NombreUsuario</td>
+                    <td class="text-end fw-bold">$@p.Total.ToString("N2")</td>
+                    <td>
+                        @if (p.Confirmado)
+                        {
+                            <span class="badge bg-success">Confirmado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">En proceso</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Detalle" asp-route-id="@p.Id" class="btn btn-sm btn-outline-info">Ver detalle</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (!Model.Any())
+{
+    <p class="text-muted text-center">No hay pedidos registrados.</p>
+}
